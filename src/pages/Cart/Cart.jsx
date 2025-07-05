@@ -1,0 +1,112 @@
+import React, { useState, useContext } from 'react';
+import { CartContext } from '../../Context/Context';
+import { NavLink } from 'react-router';
+
+const Cart = () => {
+  const { cart, setToCart } = useContext(CartContext);
+
+  //Product remove from cart as well as localStorage
+  const handleRemove = (product) => {
+    const newCart = cart.filter((item) => item.productName !== product.productName);
+    setToCart(newCart);
+  }
+
+  //Total amount or price
+  var totalAmount = 0;
+  cart.forEach((cart) => {
+    totalAmount += cart.price * cart.quantity;
+  })
+
+  //handing quantity change
+  const handleChangeQuantity = (index, newQuantity) => {
+    setToCart((prevCart) => {
+      const updatedCart = [...prevCart];
+      updatedCart[index].quantity = newQuantity > 0 ? newQuantity : 1;
+      return updatedCart;
+    });
+  };
+
+
+  return (
+    <div className="m-4">
+      <h1 className="text-2xl font-bold text-[#f68402] mb-4">🛒 My Items</h1>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="bg-white w-full lg:w-[65%] rounded-xl shadow-md relative">
+
+          {/* cart section */}
+          <div className="flex flex-col gap-6 p-4 mb-20 max-h-[60vh] overflow-y-auto">
+            {cart.length > 0 ? (
+              cart.map((product, index) => (
+                <div
+                  key={index}
+                  className="bg-[#fefaf5] flex flex-col md:flex-row justify-between items-center gap-5 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-2 hover:border-[#f5a13f] transition-all"
+                >
+                  <img
+                    src={product.img_url}
+                    alt={product.productName}
+                    className="w-24 h-24 object-cover rounded-md"
+                  />
+                  <div className="text-center md:text-left flex-1">
+                    <h2 className="text-xl font-semibold text-[#444]">{product.productName}</h2>
+                    <p className="text-lg text-gray-600">₹{product.price}</p>
+                    <div>
+                      <label htmlFor="quantity">Quantity - </label>
+                      <input
+                        type="number"
+                        value={product.quantity}
+                        onChange={(e) => handleChangeQuantity(index, parseInt(e.target.value) || 1)}
+                        className="w-16 text-center border rounded-md px-2 py-1 bg-white text-gray-700"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleRemove(product)}
+                    className="py-2 px-4 bg-[#f68402] text-white font-medium rounded-md hover:bg-[#e37200] transition-all"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-gray-500 font-medium">Your cart is empty 🛒</p>
+            )}
+          </div>
+
+          {/* Place Order Button */}
+          {cart.length > 0 && (
+            <div className="absolute bottom-0 bg-white w-full p-3 flex justify-end shadow-inner rounded-b-xl z-10">
+              <button className="py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all">
+                Place Order
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Price Details Section */}
+        <div className="w-full lg:w-[30%] bg-[#fff3e6] p-4 rounded-xl shadow-md">
+          <h2 className="text-xl font-semibold text-[#333] text-center mb-2">💰 Price Details</h2>
+          <div className="h-[1px] bg-[#e0a954] mb-3"></div>
+
+          {cart.map((product, index) => (
+            <div className="flex justify-between py-1 text-sm text-gray-800" key={index}>
+              <span>{product.productName}</span>
+              <span>₹{product.price * product.quantity}</span>
+            </div>
+          ))}
+
+          <div className="h-[1px] bg-[#e0a954] mt-3 mb-2"></div>
+          <div className="flex justify-between font-semibold text-lg">
+            <span>Total</span>
+            <span>₹{totalAmount}</span>
+          </div>
+        </div>
+      </div>
+
+      <NavLink to='/'><button className="m-6 py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all inline-flex">Add more Products</button></NavLink>
+    </div>
+
+  );
+};
+
+export default Cart;
