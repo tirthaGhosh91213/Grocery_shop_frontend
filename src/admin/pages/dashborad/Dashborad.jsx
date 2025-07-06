@@ -1,19 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import React from "react";
+import AdminNavbar from '../../component/adminNavbar/AdminNavbar'
 
 const orders = [1, 2, 3];
 
 const AdminDashboard = () => {
-
-  const [isAdmin, setIsAdmin] = useState(true);
-  const navigate = useNavigate();
-
-  if (!isAdmin) {
-    navigate("/");
-  }
-
   return (
     <div className="min-h-screen bg-white px-4 py-6">
+      <AdminNavbar/>
       <div className="flex flex-col gap-6">
         {orders.map((_, index) => (
           <div

@@ -14,7 +14,7 @@ import { NavLink } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-[#ff6f3c] text-white py-10 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-sm">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-sm items-center">
         <div>
           <h2 className="text-xl font-bold text-yellow-100 mb-2">GetGrocery</h2>
           <p className="mb-4">
@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div>
+        <div className="max-md:hidden">
           <h3 className="text-yellow-100 font-semibold mb-3">Quick Links</h3>
           <ul className="space-y-2">
             <li><NavLink to="/about" className="hover:underline">About Us</NavLink></li>
@@ -39,6 +39,7 @@ const Footer = () => {
           </ul>
         </div>
 
+        {/*
         <div>
           <h3 className="text-yellow-100 font-semibold mb-3">Top Categories</h3>
           <ul className="space-y-2">
@@ -48,7 +49,7 @@ const Footer = () => {
             <li><NavLink to="/categories/beverages" className="hover:underline">Beverages</NavLink></li>
             <li><NavLink to="/categories/organic-vegan" className="hover:underline">Organic & Vegan</NavLink></li>
           </ul>
-        </div>
+        </div> */}
 
         <div>
           <h3 className="text-yellow-100 font-semibold mb-3">Contact Us</h3>
