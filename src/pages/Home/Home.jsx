@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { toast } from 'react-toastify'
-import { CartContext } from '../../Context/Context' //context hook
+import { CartContext, SearchContext } from '../../Context/Context' //context hook
 import Banner from '../../components/Banner/Banner'
 import amul from '/images/products/amul.png'
 import bakers from '/images/products/bakers.png'
@@ -14,82 +14,86 @@ import soup from '/images/products/soup.png'
 import spices from '/images/products/spices.png'
 import Navbar2 from '../../components/Navbar2/Navbar2'
 
-const products = [
-  {
-    productName: "Knorr - Hot and Soups",
-    img_url: soup,
-    price: 50,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Amul Taaza Milky Milk",
-    img_url: amul,
-    price: 28,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Amul Diced Cheese",
-    img_url: cheese,
-    price: 120,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Bread - Baker's Choice",
-    img_url: bakers,
-    price: 35,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Pasta - Pastalicious",
-    img_url: pasta,
-    price: 90,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Rice - Bharat Rice",
-    img_url: rich,
-    price: 60,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Sauces",
-    img_url: sauces,
-    price: 85,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Spices",
-    img_url: spices,
-    price: 40,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Juices - Maaza",
-    img_url: Juices,
-    price: 70,
-    btnText: "Add to Cart",
-    quantity : 1
-  },
-  {
-    productName: "Lays",
-    img_url: lays,
-    price: 20,
-    btnText: "Add to Cart",
-    quantity : 1
-  }
-];
-
 const Home = () => {
 
+  const [products, setProducts] = useState([
+    {
+      productName: "Knorr - Hot and Soups",
+      img_url: soup,
+      price: 50,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Amul Taaza Milky Milk",
+      img_url: amul,
+      price: 28,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Amul Diced Cheese",
+      img_url: cheese,
+      price: 120,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Bread - Baker's Choice",
+      img_url: bakers,
+      price: 35,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Pasta - Pastalicious",
+      img_url: pasta,
+      price: 90,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Rice - Bharat Rice",
+      img_url: rich,
+      price: 60,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Sauces",
+      img_url: sauces,
+      price: 85,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Spices",
+      img_url: spices,
+      price: 40,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Juices - Maaza",
+      img_url: Juices,
+      price: 70,
+      btnText: "Add to Cart",
+      quantity: 1
+    },
+    {
+      productName: "Lays",
+      img_url: lays,
+      price: 20,
+      btnText: "Add to Cart",
+      quantity: 1
+    }
+  ])
   const { cart, setToCart } = useContext(CartContext);
+  const { searchTerm } = useContext(SearchContext)
+
+  const filteredProducts = products.filter(product =>
+    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   const handleAdd = (product, index) => {
     const alreadyExists = cart.some(item => item.productName === product.productName);
@@ -110,10 +114,9 @@ const Home = () => {
       <div className='w-[99%] rounded-xl bg-white m-4 px-2 py-5'>
         <h1 className='text-2xl m-3 font-bold relative inline-flex pb-1 after:absolute after:bottom-0 after:right-0 after:w-[70%] after:h-[2px] after:bg-[#b88008]'>Our Products</h1>
 
-        {/* card added */}
         <div className='grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-6 px-4 sm:px-6 md:px-10 py-5'>
           {
-            products.map((product, index) => (
+            filteredProducts.length > 0 && filteredProducts.map((product, index) => (
               <div
                 key={index}
                 className='bg-[#f6f5f3] flex flex-col justify-evenly items-center gap-5 p-3 rounded-xl transition-all border-[0.4px] shadow-lg hover:border-indigo-500 hover:scale-[1.02] max-sm:p-2 w-full'
@@ -134,11 +137,18 @@ const Home = () => {
                     className='py-2 px-4 bg-[#f68402] text-white font-medium rounded-md hover:bg-[#e37200] transition-all'
                     onClick={() => handleAdd(product, index)}
                   >
-                   {product.btnText}
+                    {product.btnText}
                   </button>
                 </div>
               </div>
             ))
+          }
+          {
+            filteredProducts.length === 0 && (
+              <div className='col-span-full text-center text-gray-500'>
+                No products found for "{searchTerm}"
+              </div>
+            )
           }
         </div>
       </div>

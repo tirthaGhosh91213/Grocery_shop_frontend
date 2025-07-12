@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { CartContext } from '../../Context/Context';
 import { NavLink } from 'react-router';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
   const { cart, setToCart } = useContext(CartContext);
+  const [checkout, setCheckout] = useState(false)
 
   //Product remove from cart as well as localStorage
   const handleRemove = (product) => {
@@ -25,6 +27,16 @@ const Cart = () => {
       return updatedCart;
     });
   };
+
+  //Checkout function
+  const handleCheckout = () => {
+    if (cart.length === 0) {
+      toast.warning("Your cart is empty! Please add items before checking out.");
+      return;
+    }
+    setCheckout(true);
+    toast.success("Thank you for your order! Your items will be processed shortly.");
+  }
 
 
   return (
@@ -75,10 +87,19 @@ const Cart = () => {
 
           {/* Place Order Button */}
           {cart.length > 0 && (
-            <div className="absolute bottom-0 bg-white w-full p-3 flex justify-end shadow-inner rounded-b-xl z-10">
-              <button className="py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all">
-                Place Order
-              </button>
+            <div>
+              <div>
+
+              </div>
+              <div
+                className="absolute bottom-0 bg-white w-full p-3 shadow-inner rounded-b-xl z-10 flex justify-between">
+                <p className='flex justify-center items-center text-2xl'>₹{totalAmount}</p>
+                <button
+                  className="py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all"
+                  onClick={handleCheckout}>
+                  Place Order
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -105,7 +126,6 @@ const Cart = () => {
 
       <NavLink to='/'><button className="m-6 py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all inline-flex">Add more Products</button></NavLink>
     </div>
-
   );
 };
 

@@ -16,6 +16,15 @@ body {
   box-shadow: -6px 9px 0px #00000054;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @media (max-width: 540px) {
   .indexWidth {
     max-width: 40px;
