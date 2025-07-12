@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const Cart = () => {
   const { cart, setToCart } = useContext(CartContext);
-  const [checkout, setCheckout] = useState(false)
+  const [checkout, setCheckout] = useState(false);
 
   //Product remove from cart as well as localStorage
   const handleRemove = (product) => {
@@ -35,7 +35,6 @@ const Cart = () => {
       return;
     }
     setCheckout(true);
-    toast.success("Thank you for your order! Your items will be processed shortly.");
   }
 
 
@@ -94,11 +93,11 @@ const Cart = () => {
               <div
                 className="absolute bottom-0 bg-white w-full p-3 shadow-inner rounded-b-xl z-10 flex justify-between">
                 <p className='flex justify-center items-center text-2xl'>₹{totalAmount}</p>
-                <button
+                <NavLink to='/checkout'
                   className="py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all"
                   onClick={handleCheckout}>
                   Place Order
-                </button>
+                </NavLink>
               </div>
             </div>
           )}

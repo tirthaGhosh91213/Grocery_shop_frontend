@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { NavLink } from "react-router";
 
 const orders = [
@@ -6,7 +6,9 @@ const orders = [
     { id: "#123457", date: "2025-06-20", total: "₹1299", status: "Shipped" },
   ];
 
-  const user = {
+const Profile = () => {
+
+  const [user, setUser] = useState({
     name: "Sourav Kumar Bera",
     email: "sourav@example.com",
     phone: "+91 98765 43210",
@@ -16,10 +18,11 @@ const orders = [
       state: "Jharkhand",
       zip: "832101",
     },
-  };
+  })
 
-const Profile = () => {
-
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
   return (
     <div className="bg-white min-h-screen py-10 px-4 sm:px-10">
