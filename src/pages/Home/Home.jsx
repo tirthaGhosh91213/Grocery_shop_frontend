@@ -112,7 +112,7 @@ const Home = () => {
       <Navbar2 />
       <Banner />
       <div className='w-[99%] rounded-xl bg-white m-4 px-2 py-5'>
-        <h1 className='text-2xl m-3 font-bold relative inline-flex pb-1 after:absolute after:bottom-0 after:right-0 after:w-[70%] after:h-[2px] after:bg-[#b88008]'>Our Products</h1>
+        <h1 className='text-2xl m-3 font-bold relative inline-flex pb-1 after:absolute after:bottom-0 after:right-0 after:w-[70%] after:h-[2px] after:bg-[#b83a08]'>Our Products</h1>
 
         <div className='grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-6 px-4 sm:px-6 md:px-10 py-5'>
           {
@@ -134,7 +134,7 @@ const Home = () => {
                 </div>
                 <div>
                   <button
-                    className='py-2 px-4 bg-[#f68402] text-white font-medium rounded-md hover:bg-[#e37200] transition-all'
+                    className='py-2 px-4 bg-[#f63302] text-white font-medium rounded-md hover:bg-[#e30000] transition-all'
                     onClick={() => handleAdd(product, index)}
                   >
                     {product.btnText}
@@ -156,4 +156,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;

@@ -7,7 +7,7 @@ import Checkout from '../pages/Checkout/Checkout'
 import PageNotFound from '../pages/PageNotFound';
 import Signup from '../pages/SignUp/SignUp';
 import LogIn from '../pages/LogIn/LogIn';
-import AdminDashboard from '../admin/pages/dashborad/Dashborad';
+import AdminDashboard from '../admin/pages/dashborad/AdminDashborad';
 import AvailableProducts from '../admin/pages/availableProducts/AvailableProducts';
 import AddProduct from '../admin/pages/addProduct/AddProduct';
 

@@ -11,7 +11,7 @@ const AdminDashboard = () => {
         {orders.map((_, index) => (
           <div
             key={index}
-            className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg shadow-sm bg-[#fff3e6] hover:shadow-md transition"
+            className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg shadow-sm bg-[#ffe9e6] hover:shadow-md transition"
           >
             {/* User Details */}
             <div className="p-4 border rounded-md bg-white text-[#333] font-medium">User Details</div>
@@ -25,7 +25,7 @@ const AdminDashboard = () => {
             {/* Delivery Status */}
             <div className="p-4 border rounded-md bg-white text-[#333] font-medium flex justify-between items-center">
               <span>Delivery Status</span>
-              <button className="text-sm bg-[#f68402] text-white px-3 py-1 rounded hover:bg-[#e37200]">
+              <button className="py-2 px-4 mt-6 bg-[#f61a02] text-white font-medium rounded-md hover:bg-[#c30000] transition-all">
                 Edit
               </button>
             </div>

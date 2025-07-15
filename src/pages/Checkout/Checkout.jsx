@@ -13,9 +13,9 @@ const Checkout = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#f68402] my-4 mx-2">Checkout</h1>
+      <h1 className="text-2xl font-bold text-[#f60202] my-4 mx-2">Checkout</h1>
 
-      <div className="bg-white p-4 rounded-xl shadow-md w-full sm:w-[80%] mx-auto">
+      <div className="bg-white p-4 rounded-xl shadow-md w-full sm:w-[80%] mx-auto my-7">
         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
 
         <ul className="space-y-4">
@@ -39,7 +39,7 @@ const Checkout = () => {
         <div className="mt-6 flex justify-between items-center">
           <h3 className="text-lg font-semibold">Total: ₹{totalAmount}</h3>
           <button
-            className='py-2 px-4 bg-[#f68402] text-white font-medium rounded-md hover:bg-[#e37200] transition-all'>
+            className="py-2 px-4 mt-6 bg-[#f61a02] text-white font-medium rounded-md hover:bg-[#c30000] transition-all">
             Checkout Now
           </button>
         </div>

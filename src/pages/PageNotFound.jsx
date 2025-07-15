@@ -6,7 +6,7 @@ const PageNotFound = () => {
     <div>
      <h1 className='w-[100vw] h-[50vh] flex flex-col justify-center items-center text-3xl'>
       <p>Page Not Found</p>
-      <NavLink to='/'><button className="m-6 py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all inline-flex">Go back to Home page</button></NavLink>
+      <NavLink to='/'><button className="m-5 bg-[#f61e02] text-white py-2 px-4 rounded-xl hover:bg-[#e30000]">Go back to Home page</button></NavLink>
      </h1>
     </div>
   )

@@ -47,7 +47,7 @@ const Banner = () => {
     <>
       <div className="px-4 py-2">
         <h1 className="text-2xl font-bold text-[#414141]">Deals of the Day 🏷️</h1>
-        <div className="mt-1 w-[60%] h-[2px] bg-[#f68402] rounded-full"></div>
+        <div className="mt-1 w-[60%] h-[2px] bg-[#f60202] rounded-full"></div>
       </div>
 
       <div className='overflow-hidden md:w-[60vw] relative rounded-2xl'>
@@ -64,11 +64,11 @@ const Banner = () => {
         <div className='absolute left-0 flex justify-between items-center w-full top-[40%] max-sm:top-1/3 z-10 px-2'>
           <button
             onClick={() => handleSlide("left")}
-            className='text-6xl p-3 bg-[#ffe8cf5d] opacity-80 text-black rounded-md cursor-pointer hover:bg-[#f68402] hover:opacity-100 transition-all duration-300 shadow-md max-sm:text-xl'
+            className='text-6xl p-3 bg-[#ffe8cf5d] opacity-80 text-black rounded-md cursor-pointer hover:bg-[#f62302] hover:opacity-100 transition-all duration-300 shadow-md max-sm:text-xl'
           >&lt;</button>
           <button
             onClick={() => handleSlide("right")}
-            className='text-6xl p-3 bg-[#ffe8cf5d] opacity-80 text-black rounded-md cursor-pointer hover:bg-[#f68402] hover:opacity-100 transition-all duration-300 shadow-md max-sm:text-xl'
+            className='text-6xl p-3 bg-[#ffe8cf5d] opacity-80 text-black rounded-md cursor-pointer hover:bg-[#f62f02] hover:opacity-100 transition-all duration-300 shadow-md max-sm:text-xl'
           >&gt;</button>
         </div>
       </div>
@@ -77,4 +77,4 @@ const Banner = () => {
   )
 }
 
-export default Banner
+export default Banner;

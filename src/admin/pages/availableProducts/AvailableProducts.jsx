@@ -16,15 +16,15 @@ const AvailableProducts = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <AdminNavbar/>
-      <div className="w-full max-w-4xl border rounded-md p-6 space-y-6 border-orange-400 bg-[#fff3e6] shadow-xl">
-        <h2 className="text-orange-500 text-xl font-semibold mb-2">Available Products</h2>
+      <div className="w-full max-w-4xl border rounded-md p-6 space-y-6 border-red-400 bg-[#ffeae6] shadow-xl">
+        <h2 className="text-red-500 text-xl font-semibold mb-2">Available Products</h2>
         
         <input
           type="text"
           placeholder="Search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2 border border-orange-500 rounded-md bg-transparent text-black focus:outline-none"
+          className="w-full px-4 py-2 border border-red-500 rounded-md bg-transparent text-black focus:outline-none"
         />
 
         {/* Product List */}
@@ -32,20 +32,20 @@ const AvailableProducts = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="border border-orange-500 rounded-md p-4 flex items-center justify-between"
+              className="border border-red-500 rounded-md p-4 flex items-center justify-between"
             >
               <div className="flex gap-4 w-full">
-                <div className="flex-1 border border-orange-500 rounded-md p-4 text-black text-center">
+                <div className="flex-1 border border-red-500 rounded-md p-4 text-black text-center">
                   {product.name}
                 </div>
-                <div className="flex-1 border border-orange-500 rounded-md p-4 text-black text-center">
+                <div className="flex-1 border border-red-500 rounded-md p-4 text-black text-center">
                   {product.availability}
                 </div>
               </div>
 
               <button
                 onClick={() => handleEdit(product.id)}
-                className="ml-4 w-10 h-10 border border-orange-500 rounded-full text-black hover:bg-white hover:text-black transition"
+                className="ml-4 w-10 h-10 border border-red-500 rounded-full text-black hover:bg-white hover:text-black transition"
               >
                 Edit
               </button>

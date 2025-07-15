@@ -26,7 +26,7 @@ const Profile = () => {
 
   return (
     <div className="bg-white min-h-screen py-10 px-4 sm:px-10">
-      <h1 className="text-3xl font-bold text-orange-600 mb-6">My Profile</h1>
+      <h1 className="text-3xl font-bold text-red-600 mb-6">My Profile</h1>
 
       {/* User Info */}
       <div className="border rounded-lg shadow-sm p-5 mb-6">
@@ -56,17 +56,17 @@ const Profile = () => {
               <p><span className="font-medium">Date:</span> {order.date}</p>
               <p><span className="font-medium">Status:</span> {order.status}</p>
             </div>
-            <div className="text-orange-600 font-bold">{order.total}</div>
+            <div className="text-red-600 font-bold">{order.total}</div>
           </div>
         ))}
       </div>
 
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-4 mt-6">
-        <NavLink to='/'><button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md">
+        <NavLink to='/'><button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
           Back to Home
         </button></NavLink>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md">
+        <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
           Edit Profile
         </button>
         <button className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md">

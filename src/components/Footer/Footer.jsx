@@ -13,10 +13,10 @@ import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#ff6f3c] text-white py-10 px-6">
+    <footer className="bg-[#ff3c3c] text-white py-10 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 text-sm items-center">
         <div>
-          <h2 className="text-xl font-bold text-yellow-100 mb-2">GetGrocery</h2>
+          <h2 className="text-xl font-bold text-yellow-100 mb-2">Darbhanga Dairy</h2>
           <p className="mb-4">
             Your trusted partner for fresh and organic groceries, delivered conveniently to your home. We prioritize quality and customer satisfaction.
           </p>
@@ -63,7 +63,7 @@ const Footer = () => {
       </div>
 
       <div className="text-center text-xs text-yellow-200 mt-10">
-        © 2025 GetGrocery. All rights reserved. Designed with <span className="text-white">♥</span> for Fresh Living.
+        © 2025 Darbhanga Dairy. All rights reserved. Designed with <span className="text-white">♥</span> for Fresh Living.
       </div>
     </footer>
   );

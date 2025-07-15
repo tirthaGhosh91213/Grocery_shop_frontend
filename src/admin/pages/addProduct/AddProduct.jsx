@@ -59,8 +59,8 @@ const AddProduct = () => {
   return (
     <div className="flex flex-col items-center justify-center p-4">
       <AdminNavbar />
-      <div className="border border-orange-400 bg-[#fff3e6] rounded-md p-8 w-full max-w-xl text-center shadow-xl space-y-6">
-        <h1 className="text-orange-500 text-xl font-semibold mb-6 text-left">Add Products</h1>
+      <div className="border border-red-400 bg-[#ffe9e6] rounded-md p-8 w-full max-w-xl text-center shadow-xl space-y-6">
+        <h1 className="text-red-500 text-xl font-semibold mb-6 text-left">Add Products</h1>
         <div className="space-y-4">
           <input
             type="text"
@@ -88,11 +88,11 @@ const AddProduct = () => {
             placeholder="productImg"
             value={productImg}
             onChange={(e) => setProductImg(e.target.value)}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none bg-orange-500"
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none bg-red-500"
           />
           <button
             onClick={handleAddOrEdit}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md"
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md"
           >
             {editId ? "Update Product" : "Add Product"}
           </button>
@@ -108,7 +108,7 @@ const AddProduct = () => {
                   className="bg-gray-800 p-4 rounded-md flex justify-between items-center"
                 >
                   <div className="text-left">
-                    <p className="font-bold text-orange-300">{prod.name}</p>
+                    <p className="font-bold text-red-300">{prod.name}</p>
                     <p>Price: ₹{prod.price}</p>
                     <p>Qty: {prod.quantity}</p>
                   </div>

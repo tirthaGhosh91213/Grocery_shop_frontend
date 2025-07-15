@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import SearchIcon from '/images/search.svg';
 import CartIcon from '/images/cartIcon.svg';
@@ -11,20 +11,20 @@ const Navbar = () => {
   const { setSearchTerm } = useContext(SearchContext);
 
   return (
-    <nav className="py-3 px-4 bg-[#fff8f0] border-b-2 border-[#ffc773] sticky top-0 z-50 shadow-md">
+    <nav className="py-3 px-4 bg-[#fff0f0] border-b-2 border-[#ff7373] sticky top-0 z-50 shadow-md">
       <div className="flex justify-between items-center">
 
-        <p className="font-semibold text-2xl text-[#f68402] max-sm:text-xl">GetGrocery</p>
+        <p className="font-semibold text-2xl text-[#f60202] max-sm:text-xl">Darbhanga Dairy</p>
 
         <div className="hidden sm:flex items-center group">
           <input
             type="search"
             name="search"
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-9 w-[300px] p-2 px-4 text-sm sm:text-base border border-[#ffcf8b] focus:outline-none rounded-l-full transition-all duration-300 group-hover:shadow-md group-hover:w-[320px]"
+            className="h-9 w-[300px] p-2 px-4 text-sm sm:text-base border border-[#ff978b] focus:outline-none rounded-l-full transition-all duration-300 group-hover:shadow-md group-hover:w-[320px]"
             placeholder="Search for items..."
           />
-          <button className="bg-[#f68402] p-2 rounded-r-full hover:bg-[#e17200] transition">
+          <button className="bg-[#f60202] p-2 rounded-r-full hover:bg-[#e10000] transition">
             <img src={SearchIcon} alt="search" className="h-5 invert" />
           </button>
         </div>
@@ -32,17 +32,17 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           <NavLink
             to="/cart"
-            className="rounded-full p-1 bg-[#ffc773] hover:bg-[#fcae3b] relative"
+            className="rounded-full p-1 bg-[#ff4c4c] hover:bg-[#f72626] relative"
           >
             <img src={CartIcon} alt="Cart" className="w-7" />
-            <span className="text-[10px] absolute -top-1 -right-1 bg-[#ff5733] rounded-full px-1.5 py-0.5 text-white">
+            <span className="text-[10px] absolute -top-1 -right-1 bg-[#ff3333] rounded-full px-1.5 py-0.5 text-white">
               {cartLen}
             </span>
           </NavLink>
 
           <NavLink
             to="/profile"
-            className="rounded-full p-1 bg-[#ffc773] hover:bg-[#fcae3b]"
+            className="rounded-full p-1 bg-[#ff4c4c] hover:bg-[#f72626]"
           >
             <img src={ProfileIcon} alt="Profile" className="w-7" />
           </NavLink>
@@ -54,10 +54,10 @@ const Navbar = () => {
           type="search"
           name="search"
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="h-9 w-full p-2 px-4 text-sm border border-[#ffcf8b] focus:outline-none rounded-l-full transition-all duration-300 group-hover:shadow-md"
-          placeholder="Search items..."
+          className="h-9 w-[300px] p-2 px-4 text-sm sm:text-base border border-[#ff978b] focus:outline-none rounded-l-full transition-all duration-300 group-hover:shadow-md group-hover:w-[320px]"
+          placeholder="Search for items..."
         />
-        <button className="bg-[#f68402] p-2 rounded-r-full hover:bg-[#e17200] transition">
+        <button className="bg-[#f60202] p-2 rounded-r-full hover:bg-[#e10000] transition">
           <img src={SearchIcon} alt="search" className="h-5 invert" />
         </button>
       </div>

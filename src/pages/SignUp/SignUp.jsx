@@ -50,7 +50,7 @@ export default function Signup() {
                 <label className="block text-sm font-medium">Name</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+                  className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -61,7 +61,7 @@ export default function Signup() {
                 <label className="block text-sm font-medium">Email</label>
                 <input
                   type="email"
-                  className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+                  className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -76,7 +76,7 @@ export default function Signup() {
               <button
                 type="button"
                 onClick={sendOTP}
-                className="bg-[#f68402] text-white py-2 px-4 rounded-xl hover:bg-[#e37200]"
+                className="bg-[#f62302] text-white py-2 px-4 rounded-xl hover:bg-[#e30000]"
               >
                 Send OTP
               </button>
@@ -94,7 +94,7 @@ export default function Signup() {
                 <label className="block text-sm font-medium">Enter OTP</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+                  className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
                   value={enteredOtp}
                   onChange={(e) => setEnteredOtp(e.target.value)}
                 />
@@ -103,7 +103,7 @@ export default function Signup() {
               <button
                 type="button"
                 onClick={verifyOTP}
-                className=" bg-[#f68402] text-white py-2 px-4 rounded-xl hover:bg-[#e37200]"
+                className=" bg-[#f63302] text-white py-2 px-4 rounded-xl hover:bg-[#e30000]"
               >
                 Verify OTP
               </button>
@@ -117,7 +117,7 @@ export default function Signup() {
                 <label className="block text-sm font-medium">Password</label>
                 <input
                   type="password"
-                  className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+                  className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -128,7 +128,7 @@ export default function Signup() {
                 <label className="block text-sm font-medium">Mobile Number</label>
                 <input
                   type="tel"
-                  className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+                  className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   required
@@ -137,7 +137,7 @@ export default function Signup() {
 
               <button
                 type="submit"
-                className=" bg-[#f68402] text-white py-2 px-4 rounded-xl hover:bg-[#e37200]"
+                className=" bg-[#f61e02] text-white py-2 px-4 rounded-xl hover:bg-[#e30000]"
               >
                 Complete Signup
               </button>

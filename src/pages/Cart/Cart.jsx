@@ -40,7 +40,7 @@ const Cart = () => {
 
   return (
     <div className="m-4">
-      <h1 className="text-2xl font-bold text-[#f68402] mb-4">🛒 My Items</h1>
+      <h1 className="text-2xl font-bold text-[#f60202] mb-4">🛒 My Items</h1>
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="bg-white w-full lg:w-[65%] rounded-xl shadow-md relative">
@@ -51,7 +51,7 @@ const Cart = () => {
               cart.map((product, index) => (
                 <div
                   key={index}
-                  className="bg-[#fefaf5] flex flex-col md:flex-row justify-between items-center gap-5 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-2 hover:border-[#f5a13f] transition-all"
+                  className="bg-[#fef6f5] flex flex-col md:flex-row justify-between items-center gap-5 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-2 hover:border-[#f5483f] transition-all"
                 >
                   <img
                     src={product.img_url}
@@ -73,7 +73,7 @@ const Cart = () => {
                   </div>
                   <button
                     onClick={() => handleRemove(product)}
-                    className="py-2 px-4 bg-[#f68402] text-white font-medium rounded-md hover:bg-[#e37200] transition-all"
+                    className="py-2 px-4 mt-6 bg-[#f61a02] text-white font-medium rounded-md hover:bg-[#c30000] transition-all"
                   >
                     Remove
                   </button>
@@ -94,7 +94,7 @@ const Cart = () => {
                 className="absolute bottom-0 bg-white w-full p-3 shadow-inner rounded-b-xl z-10 flex justify-between">
                 <p className='flex justify-center items-center text-2xl'>₹{totalAmount}</p>
                 <NavLink to='/checkout'
-                  className="py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all"
+                  className="py-2 px-4 mt-6 bg-[#f61a02] text-white font-medium rounded-md hover:bg-[#c30000] transition-all"
                   onClick={handleCheckout}>
                   Place Order
                 </NavLink>
@@ -104,9 +104,9 @@ const Cart = () => {
         </div>
 
         {/* Price Details Section */}
-        <div className="w-full lg:w-[30%] bg-[#fff3e6] p-4 rounded-xl shadow-md">
+        <div className="w-full lg:w-[30%] bg-[#ffe9e6] p-4 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold text-[#333] text-center mb-2">💰 Price Details</h2>
-          <div className="h-[1px] bg-[#e0a954] mb-3"></div>
+          <div className="h-[1px] bg-[#e05b54] mb-3"></div>
 
           {cart.map((product, index) => (
             <div className="flex justify-between py-1 text-sm text-gray-800" key={index}>
@@ -123,7 +123,7 @@ const Cart = () => {
         </div>
       </div>
 
-      <NavLink to='/'><button className="m-6 py-2 px-6 bg-[#f68402] font-semibold text-white rounded-md hover:bg-[#d96a00] transition-all inline-flex">Add more Products</button></NavLink>
+      <NavLink to='/'><button className="py-2 px-4 mt-6 bg-[#f61a02] text-white font-medium rounded-md hover:bg-[#c30000] transition-all">Add more Products</button></NavLink>
     </div>
   );
 };

@@ -24,7 +24,7 @@ const LogIn = () => {
             <label className="block text-sm font-medium">Name</label>
             <input
               type="text"
-              className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+              className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -35,7 +35,7 @@ const LogIn = () => {
             <label className="block text-sm font-medium">Email</label>
             <input
               type="email"
-              className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+              className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -45,7 +45,7 @@ const LogIn = () => {
             <label className="block text-sm font-medium">Mobile no.</label>
             <input
               type="email"
-              className="w-full px-4 py-2 border rounded-xl focus:outline-orange-500"
+              className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
               required
@@ -54,7 +54,7 @@ const LogIn = () => {
           <div>
             <button
               type="submit"
-              className="bg-[#f68402] text-white py-2 px-4 rounded-xl hover:bg-[#e37200]"
+              className="bg-[#f62302] text-white py-2 px-4 rounded-xl hover:bg-[#e30000]"
             >
               Log in
             </button>

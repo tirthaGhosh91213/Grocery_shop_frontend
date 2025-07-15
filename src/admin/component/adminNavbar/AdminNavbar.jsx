@@ -4,9 +4,8 @@ import { NavLink } from 'react-router-dom';
 const AdminNavbar = () => {
 
   //styles
-  const activeClass = "px-4 py-2 bg-[#f68402] text-white rounded-md hover:bg-[#e37200] transition";
-  const inactiveClass = "px-4 py-2 border border-[#f68402] text-[#f68402] rounded-md hover:bg-[#f68402] hover:text-white transition";
-
+  const activeClass = "px-4 py-2 bg-[#e63946] text-white rounded-md hover:bg-[#c53030] transition";
+  const inactiveClass = "px-4 py-2 border border-[#e63946] text-[#e63946] rounded-md hover:bg-[#e63946] hover:text-white transition";
 
   return (
     <>
