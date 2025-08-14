@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react';
-import Routers from '../routers/Routers';
+import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { CartContext, SearchContext } from '../Context/Context';
 import { ToastContainer, Bounce } from 'react-toastify';
 
 const Layout = () => {
-
   const [cart, setToCart] = useState(() => {
-    const initialCarts = JSON.parse(localStorage.getItem('carts'));
     try {
-      return initialCarts ? initialCarts : [];
+      const initialCarts = JSON.parse(localStorage.getItem('carts'));
+      return initialCarts || [];
     } catch (error) {
       return [];
     }
   });
+
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Layout = () => {
       <SearchContext.Provider value={{ searchTerm, setSearchTerm }}>
         <CartContext.Provider value={{ cart, setToCart }}>
           <Navbar />
-          <Routers />
+          <Outlet /> {/* This is where nested route content will show */}
           <Footer />
         </CartContext.Provider>
         <ToastContainer
@@ -40,10 +40,11 @@ const Layout = () => {
           draggable
           pauseOnHover
           theme="light"
-          transition={Bounce} />
+          transition={Bounce}
+        />
       </SearchContext.Provider>
     </>
-  )
-}
+  );
+};
 
 export default Layout;

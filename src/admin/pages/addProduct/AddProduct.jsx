@@ -1,16 +1,24 @@
 import { useState } from "react";
 import AdminNavbar from '../../component/adminNavbar/AdminNavbar'
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [unitLabel, setUnitLabel] = useState("");
+  const [description, setDescription] = useState("");
   const [productImg, setProductImg] = useState(null);
   const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleAddOrEdit = () => {
-    if (!name || !price || !quantity || !productImg) return alert("Fill all fields");
+  const handleAddOrEdit = async () => {
+    if (!name || !price || !quantity || !unitLabel || !description || !productImg) {
+      toast.error("Fill all fields", { autoClose: 2000 });
+      return;
+    }
 
     if (editId !== null) {
       setProducts((prev) =>
@@ -19,26 +27,55 @@ const AddProduct = () => {
         )
       );
       setEditId(null);
+      toast.success("✅ Product updated", { autoClose: 2000 });
     } else {
-      const newProduct = {
-        id: Date.now(),
-        name,
-        price: +price,
-        quantity: +quantity,
-      };
-      setProducts([...products, newProduct]);
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("accessToken");
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("unitQuantity", quantity);
+        formData.append("unitLabel", unitLabel);
+        formData.append("unitPrice", price);
+        formData.append("description", description);
+        formData.append("imageFile", productImg);;
+
+        const res = await fetch("http://localhost:8000/api/v1/products/create", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.apiError || "Failed to add product");
+
+        setProducts((prev) => [...prev, data.data]);
+        toast.success("✅ Product added successfully", { autoClose: 2000 });
+      } catch (error) {
+        toast.error(error.message, { autoClose: 2000 });
+      } finally {
+        setLoading(false);
+      }
     }
 
     setName("");
     setPrice("");
     setQuantity("");
+    setUnitLabel("");
+    setDescription("");
+    setProductImg(null);
   };
 
   const handleEdit = (id) => {
     const prod = products.find((p) => p.id === id);
     setName(prod.name);
-    setPrice(prod.price);
-    setQuantity(prod.quantity);
+    setPrice(prod.unitPrice || prod.price);
+    setQuantity(prod.unitQuantity || prod.quantity);
+    setUnitLabel(prod.unitLabel || "");
+    setDescription(prod.description || "");
     setEditId(id);
   };
 
@@ -54,6 +91,7 @@ const AddProduct = () => {
 
   const deleteProduct = (id) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
+    toast.info("🗑️ Product deleted", { autoClose: 2000 });
   };
 
   return (
@@ -84,17 +122,29 @@ const AddProduct = () => {
             className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none"
           />
           <input
+            type="text"
+            placeholder="Unit Label (e.g. ltr, kg)"
+            value={unitLabel}
+            onChange={(e) => setUnitLabel(e.target.value)}
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none"
+          />
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none"
+          />
+          <input
             type="file"
-            placeholder="productImg"
-            value={productImg}
-            onChange={(e) => setProductImg(e.target.value)}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none bg-red-500"
+            onChange={(e) => setProductImg(e.target.files[0])}
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none bg-red-500 text-white"
           />
           <button
             onClick={handleAddOrEdit}
             className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md"
+            disabled={loading}
           >
-            {editId ? "Update Product" : "Add Product"}
+            {loading ? "Processing..." : editId ? "Update Product" : "Add Product"}
           </button>
         </div>
         <div className="text-white">
@@ -109,8 +159,8 @@ const AddProduct = () => {
                 >
                   <div className="text-left">
                     <p className="font-bold text-red-300">{prod.name}</p>
-                    <p>Price: ₹{prod.price}</p>
-                    <p>Qty: {prod.quantity}</p>
+                    <p>Price: ₹{prod.unitPrice || prod.price}</p>
+                    <p>Qty: {prod.unitQuantity || prod.quantity} {prod.unitLabel}</p>
                   </div>
                   <div className="space-x-2">
                     <button
@@ -122,7 +172,7 @@ const AddProduct = () => {
                     <button
                       onClick={() => deleteQuantity(prod.id)}
                       className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded text-white"
-                      disabled={prod.quantity <= 1}
+                      disabled={(prod.unitQuantity || prod.quantity) <= 1}
                     >
                       -Qty
                     </button>
@@ -139,6 +189,9 @@ const AddProduct = () => {
           )}
         </div>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer position="top-center" />
     </div>
   );
 }

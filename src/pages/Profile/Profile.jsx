@@ -1,78 +1,328 @@
-import React, {useState, useEffect} from "react";
-import { NavLink } from "react-router";
-
-const orders = [
-    { id: "#123456", date: "2025-06-15", total: "₹2999", status: "Delivered" },
-    { id: "#123457", date: "2025-06-20", total: "₹1299", status: "Shipped" },
-  ];
+import React, { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 const Profile = () => {
+  const [activeTab, setActiveTab] = useState("profile");
+  const [user, setUser] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [user, setUser] = useState({
-    name: "Sourav Kumar Bera",
-    email: "sourav@example.com",
-    phone: "+91 98765 43210",
-    address: {
-      line1: "Khandamouda",
-      city: "Baharagora",
-      state: "Jharkhand",
-      zip: "832101",
-    },
-  })
+  // Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [editAddressId, setEditAddressId] = useState(null);
 
+  const accessToken = localStorage.getItem("accessToken");
+
+  // Fetch User Profile
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:8000/api/v1/user-profile/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await res.json();
+      if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to fetch profile");
+      setUser(result.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch Orders
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:8000/api/v1/orders/my", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await res.json();
+      if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to fetch orders");
+      setOrders(result.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch Addresses
+  const fetchAddresses = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:8000/api/v1/address/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await res.json();
+      if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to fetch addresses");
+      setAddresses(result.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load default tab
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
+    if (!accessToken) {
+      setError("User not authenticated.");
+      return;
+    }
+    fetchProfile();
+  }, []);
+
+  // Handle Tab Switching
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === "profile") fetchProfile();
+    if (tab === "orders") fetchOrders();
+    if (tab === "addresses") fetchAddresses();
+  };
+
+  // Open Edit Modal
+  const handleEditClick = (addr) => {
+    setEditForm(addr);
+    setEditAddressId(addr.id);
+    setIsEditModalOpen(true);
+  };
+
+  // Submit Edit Address
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await fetch(`http://localhost:8000/api/v1/address/update/${editAddressId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editForm),
+      });
+      const result = await res.json();
+      if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to update address");
+      alert(result.data);
+      setIsEditModalOpen(false);
+      fetchAddresses();
+    } catch (err) {
+      alert("Error: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete Address
+  const handleDeleteClick = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this address?")) return;
+    try {
+      setLoading(true);
+      const res = await fetch(`http://localhost:8000/api/v1/address/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const result = await res.json();
+      if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to delete address");
+      alert(result.data);
+      fetchAddresses();
+    } catch (err) {
+      alert("Error: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div className="p-6 text-lg">Loading...</div>;
+  if (error) return <div className="p-6 text-red-600 font-semibold">Error: {error}</div>;
 
   return (
-    <div className="bg-white min-h-screen py-10 px-4 sm:px-10">
-      <h1 className="text-3xl font-bold text-red-600 mb-6">My Profile</h1>
+    <div className="bg-gray-50 min-h-screen py-10 px-4 sm:px-10">
+      <h1 className="text-3xl font-bold text-red-600 mb-6">My Account</h1>
 
-      {/* User Info */}
-      <div className="border rounded-lg shadow-sm p-5 mb-6">
-        <h2 className="text-xl font-semibold text-blue-600 mb-2">User Info</h2>
-        <p><span className="font-medium">Name:</span> {user.name}</p>
-        <p><span className="font-medium">Email:</span> {user.email}</p>
-        <p><span className="font-medium">Phone:</span> {user.phone}</p>
-      </div>
-
-      {/* Address */}
-      <div className="border rounded-lg shadow-sm p-5 mb-6">
-        <h2 className="text-xl font-semibold text-blue-600 mb-2">Shipping Address</h2>
-        <p>{user.address.line1}</p>
-        <p>{user.address.city}, {user.address.state} - {user.address.zip}</p>
-      </div>
-
-      {/* Orders */}
-      <div className="border rounded-lg shadow-sm p-5 mb-6">
-        <h2 className="text-xl font-semibold text-blue-600 mb-4">My Orders</h2>
-        {orders.map(order => (
-          <div
-            key={order.id}
-            className="border border-gray-200 rounded-lg p-4 mb-4 flex justify-between items-center"
+      {/* Tabs */}
+      <div className="flex space-x-4 mb-6 border-b">
+        {["profile", "orders", "addresses"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => handleTabChange(tab)}
+            className={`px-5 py-2 font-semibold transition-colors border-b-4 ${
+              activeTab === tab
+                ? "border-red-500 text-red-600"
+                : "border-transparent text-gray-600 hover:text-red-500"
+            }`}
           >
-            <div>
-              <p><span className="font-medium">Order ID:</span> {order.id}</p>
-              <p><span className="font-medium">Date:</span> {order.date}</p>
-              <p><span className="font-medium">Status:</span> {order.status}</p>
-            </div>
-            <div className="text-red-600 font-bold">{order.total}</div>
-          </div>
+            {tab === "profile" && "Profile Info"}
+            {tab === "orders" && "My Orders"}
+            {tab === "addresses" && "My Addresses"}
+          </button>
         ))}
       </div>
 
+      {/* Profile Section */}
+      {activeTab === "profile" && user && (
+        <div className="border rounded-lg shadow-sm p-5 bg-white">
+          <h2 className="text-xl font-semibold text-blue-600 mb-4">User Info</h2>
+          <p><span className="font-medium">Name:</span> {user.name}</p>
+          <p><span className="font-medium">Email:</span> {user.email}</p>
+          <p><span className="font-medium">Phone:</span> {user.mob_no}</p>
+        </div>
+      )}
+
+      {/* Orders Section */}
+      {activeTab === "orders" && (
+        <div className="space-y-4">
+          {orders.length === 0 ? (
+            <p className="text-gray-500">No orders found.</p>
+          ) : (
+            orders.map((order) => (
+              <div key={order.id} className="border rounded-lg shadow-sm p-5 bg-white">
+                <div className="flex justify-between mb-3">
+                  <div>
+                    <p><span className="font-medium">Order ID:</span> {order.id}</p>
+                    <p><span className="font-medium">Status:</span> {order.status}</p>
+                    <p><span className="font-medium">Placed At:</span> {new Date(order.placedAt).toLocaleString()}</p>
+                  </div>
+                  <div className="text-red-600 font-bold text-lg">
+                    ₹{order.totalAmount.toLocaleString()}
+                  </div>
+                </div>
+                <div className="border-t pt-3">
+                  <h3 className="font-semibold text-gray-700 mb-2">Items:</h3>
+                  {order.items.map((item, idx) => (
+                    <div key={idx} className="flex justify-between text-sm">
+                      <span>{item.productName} ({item.weight}) × {item.quantity}</span>
+                      <span>₹{item.price.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Addresses Section */}
+      {activeTab === "addresses" && (
+        <div className="space-y-4">
+          {addresses.length === 0 ? (
+            <p className="text-gray-500">No addresses found.</p>
+          ) : (
+            addresses.map((addr) => (
+              <div
+                key={addr.id}
+                className={`border rounded-lg shadow-sm p-5 ${
+                  addr.isActive ? "border-green-500" : "border-gray-200"
+                } bg-white`}
+              >
+                <p className="font-medium">{addr.houseNumber}, {addr.street}</p>
+                <p>{addr.city}, {addr.district}</p>
+                <p>{addr.state} - {addr.pinCode}</p>
+                <p>{addr.country}</p>
+                {addr.isActive && (
+                  <span className="text-green-600 font-semibold mt-2 block">Active Address</span>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 mt-4">
+                  <button
+                    onClick={() => handleEditClick(addr)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(addr.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Edit Address</h2>
+            <form onSubmit={handleEditSubmit} className="space-y-3">
+              {["houseNumber", "street", "city", "district", "state", "pinCode", "country"].map((field) => (
+                <input
+                  key={field}
+                  type="text"
+                  value={editForm[field] || ""}
+                  onChange={(e) => setEditForm({ ...editForm, [field]: e.target.value })}
+                  placeholder={field}
+                  className="w-full border px-3 py-2 rounded-md"
+                  required
+                />
+              ))}
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 rounded-md border"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 mt-6">
-        <NavLink to='/'><button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
-          Back to Home
-        </button></NavLink>
+      <div className="flex flex-wrap gap-4 mt-8">
+        <NavLink to="/">
+          <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
+            Back to Home
+          </button>
+        </NavLink>
+
         <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
           Edit Profile
         </button>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md">
-          Manage Address
-        </button>
-        <button className="border border-blue-500 text-blue-600 px-5 py-2 rounded-md hover:bg-blue-50">
+
+        <NavLink to="/address">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md">
+            Manage Address
+          </button>
+        </NavLink>
+
+        <button
+          onClick={() => {
+            localStorage.removeItem("accessToken");
+            window.location.href = "/login";
+          }}
+          className="border border-blue-500 text-blue-600 px-5 py-2 rounded-md hover:bg-blue-50"
+        >
           Logout
         </button>
       </div>

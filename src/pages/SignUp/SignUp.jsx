@@ -127,9 +127,9 @@ export default function Signup() {
               <div>
                 <label className="block text-sm font-medium">Mobile Number</label>
                 <input
-                  type="tel"
+                  type="text"
                   className="w-full px-4 py-2 border rounded-xl focus:outline-red-500"
-                  value={mobile}
+                  value={mob_no}
                   onChange={(e) => setMobile(e.target.value)}
                   required
                 />
