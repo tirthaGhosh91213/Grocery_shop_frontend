@@ -14,6 +14,7 @@ import AvailableProducts from '../admin/pages/availableProducts/AvailableProduct
 import AddProduct from '../admin/pages/addProduct/AddProduct';
 import PageNotFound from '../pages/PageNotFound';
 import AdminOrders from '../admin/pages/orders/orders';
+import AdminActiveOrders from '../admin/pages/AllActiveOrders/activeOrders';
 
 const Routers = () => {
   return (
@@ -36,6 +37,7 @@ const Routers = () => {
       
       <Route path="/admin/add-product" element={<AddProduct />} />
       <Route path="/admin/orders" element={<AdminOrders />} />
+      <Route path="/admin/active-orders" element={<AdminActiveOrders />} />
 
       {/* 404 */}
       <Route path="*" element={<PageNotFound />} />

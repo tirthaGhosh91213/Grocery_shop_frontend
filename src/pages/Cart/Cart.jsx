@@ -1,57 +1,51 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { CartContext } from '../../Context/Context';
 
 const Cart = () => {
   const [cartData, setCartData] = useState([]);
-  const [checkout, setCheckout] = useState(false);
   const navigate = useNavigate();
 
- // ✅ Only minor change: redirect if token missing
-// Rest is same as your original
-
-useEffect(() => {
-  const fetchCartItems = async () => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      toast.error("Authentication token missing. Please log in.");
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:8000/api/v1/cart", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await res.json();
-      if (!res.ok || result.apiError) {
-        throw new Error(result.apiError || "Failed to fetch cart");
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        toast.error("Authentication token missing. Please log in.");
+        navigate("/login");
+        return;
       }
 
-      const mappedData = result.data.map(item => ({
-        id: item.id,
-        productId: item.productId,
-        quantity: item.quantity,
-        totalQuantity: item.totalQuantity,
-        totalPrice: item.totalPrice,
-        unitLabel: item.unitLabel,
-        unitPrice: item.unitPrice ?? item.totalPrice / item.totalQuantity,
-      }));
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/cart", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      setCartData(mappedData);
-    } catch (err) {
-      console.error(err);
-      toast.error("Error fetching cart items.");
-    }
-  };
+        const result = await res.json();
+        if (!res.ok || result.apiError) {
+          throw new Error(result.apiError || "Failed to fetch cart");
+        }
 
-  fetchCartItems();
-}, [navigate]);
+        const mappedData = result.data.map(item => ({
+          id: item.id,
+          productId: item.productId,
+          quantity: item.quantity,
+          totalQuantity: item.totalQuantity,
+          totalPrice: item.totalPrice,
+          unitLabel: item.unitLabel,
+          unitPrice: item.unitPrice ?? item.totalPrice / item.totalQuantity,
+        }));
 
+        setCartData(mappedData);
+      } catch (err) {
+        console.error(err);
+        toast.error("Error fetching cart items.");
+      }
+    };
+
+    fetchCartItems();
+  }, [navigate]);
 
   const handleRemove = async (productId) => {
     try {
@@ -92,12 +86,8 @@ useEffect(() => {
 
   const totalAmount = cartData.reduce((acc, item) => acc + item.totalPrice, 0);
 
-  const handleCheckout = () => {
-    if (cartData.length === 0) {
-      toast.warning("Your cart is empty!");
-      return;
-    }
-    navigate("/address"); // ✅ Navigate to address page
+  const handleManageAddress = () => {
+    navigate("/address"); // Redirect to address page
   };
 
   return (
@@ -142,15 +132,15 @@ useEffect(() => {
             )}
           </div>
 
-          {/* Place Order Button */}
+          {/* Manage Address Button */}
           {cartData.length > 0 && (
             <div className="absolute bottom-0 bg-white w-full p-3 shadow-inner rounded-b-xl z-10 flex justify-between">
               <p className="flex justify-center items-center text-2xl">₹{totalAmount.toFixed(2)}</p>
               <button
                 className="py-2 px-4 bg-[#f61a02] text-white font-medium rounded-md hover:bg-[#c30000] transition-all"
-                onClick={handleCheckout}
+                onClick={handleManageAddress}
               >
-                Place Order
+                Manage Address
               </button>
             </div>
           )}

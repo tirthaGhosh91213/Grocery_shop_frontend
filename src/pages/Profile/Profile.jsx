@@ -9,10 +9,17 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Modal State
+  // Popup state
+  const [popupMessage, setPopupMessage] = useState("");
+
+  // Address Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [editAddressId, setEditAddressId] = useState(null);
+
+  // Profile Edit Modal State
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: "", mob_no: "" });
 
   const accessToken = localStorage.getItem("accessToken");
 
@@ -30,6 +37,7 @@ const Profile = () => {
       const result = await res.json();
       if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to fetch profile");
       setUser(result.data);
+      setProfileForm({ name: result.data.name, mob_no: result.data.mob_no }); // Prefill edit profile form
     } catch (err) {
       setError(err.message);
     } finally {
@@ -96,14 +104,13 @@ const Profile = () => {
     if (tab === "addresses") fetchAddresses();
   };
 
-  // Open Edit Modal
+  // Address Edit
   const handleEditClick = (addr) => {
     setEditForm(addr);
     setEditAddressId(addr.id);
     setIsEditModalOpen(true);
   };
 
-  // Submit Edit Address
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -118,17 +125,21 @@ const Profile = () => {
       });
       const result = await res.json();
       if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to update address");
-      alert(result.data);
+
+      setPopupMessage(result.data);
+      setTimeout(() => setPopupMessage(""), 2000);
+
       setIsEditModalOpen(false);
       fetchAddresses();
     } catch (err) {
-      alert("Error: " + err.message);
+      setPopupMessage("Error: " + err.message);
+      setTimeout(() => setPopupMessage(""), 2000);
     } finally {
       setLoading(false);
     }
   };
 
-  // Delete Address
+  // Address Delete
   const handleDeleteClick = async (id) => {
     if (!window.confirm("Are you sure you want to delete this address?")) return;
     try {
@@ -141,10 +152,43 @@ const Profile = () => {
       });
       const result = await res.json();
       if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to delete address");
-      alert(result.data);
+
+      setPopupMessage(result.data);
+      setTimeout(() => setPopupMessage(""), 2000);
+
       fetchAddresses();
     } catch (err) {
-      alert("Error: " + err.message);
+      setPopupMessage("Error: " + err.message);
+      setTimeout(() => setPopupMessage(""), 2000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Profile Update Submit
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:8000/api/v1/user-profile/update/", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profileForm),
+      });
+      const result = await res.json();
+      if (!res.ok || result.apiError) throw new Error(result.apiError || "Failed to update profile");
+
+      setPopupMessage("Profile updated successfully!");
+      setTimeout(() => setPopupMessage(""), 2000);
+
+      setIsProfileModalOpen(false);
+      fetchProfile();
+    } catch (err) {
+      setPopupMessage("Error: " + err.message);
+      setTimeout(() => setPopupMessage(""), 2000);
     } finally {
       setLoading(false);
     }
@@ -155,6 +199,14 @@ const Profile = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen py-10 px-4 sm:px-10">
+
+      {/* Popup Message */}
+      {popupMessage && (
+        <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300">
+          {popupMessage}
+        </div>
+      )}
+
       <h1 className="text-3xl font-bold text-red-600 mb-6">My Account</h1>
 
       {/* Tabs */}
@@ -239,8 +291,6 @@ const Profile = () => {
                 {addr.isActive && (
                   <span className="text-green-600 font-semibold mt-2 block">Active Address</span>
                 )}
-
-                {/* Action Buttons */}
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => handleEditClick(addr)}
@@ -261,7 +311,7 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* Edit Address Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
@@ -298,6 +348,48 @@ const Profile = () => {
         </div>
       )}
 
+      {/* Edit Profile Modal */}
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Edit Profile</h2>
+            <form onSubmit={handleProfileUpdate} className="space-y-3">
+              <input
+                type="text"
+                value={profileForm.name}
+                onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                placeholder="Name"
+                className="w-full border px-3 py-2 rounded-md"
+                required
+              />
+              <input
+                type="text"
+                value={profileForm.mob_no}
+                onChange={(e) => setProfileForm({ ...profileForm, mob_no: e.target.value })}
+                placeholder="Mobile Number"
+                className="w-full border px-3 py-2 rounded-md"
+                required
+              />
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsProfileModalOpen(false)}
+                  className="px-4 py-2 rounded-md border"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-4 mt-8">
         <NavLink to="/">
@@ -306,7 +398,10 @@ const Profile = () => {
           </button>
         </NavLink>
 
-        <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
+        <button
+          onClick={() => setIsProfileModalOpen(true)}
+          className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md"
+        >
           Edit Profile
         </button>
 

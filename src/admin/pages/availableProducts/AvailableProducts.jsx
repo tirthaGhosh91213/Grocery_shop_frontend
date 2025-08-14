@@ -220,11 +220,7 @@ const AvailableProducts = () => {
               placeholder="Description"
               className="border px-3 py-2 w-full mb-3"
             />
-            <input
-              type="file"
-              onChange={handleImageChange}
-              className="border px-3 py-2 w-full mb-3"
-            />
+            
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => {

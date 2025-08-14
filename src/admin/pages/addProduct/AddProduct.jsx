@@ -162,27 +162,7 @@ const AddProduct = () => {
                     <p>Price: ₹{prod.unitPrice || prod.price}</p>
                     <p>Qty: {prod.unitQuantity || prod.quantity} {prod.unitLabel}</p>
                   </div>
-                  <div className="space-x-2">
-                    <button
-                      onClick={() => handleEdit(prod.id)}
-                      className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-white"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteQuantity(prod.id)}
-                      className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded text-white"
-                      disabled={(prod.unitQuantity || prod.quantity) <= 1}
-                    >
-                      -Qty
-                    </button>
-                    <button
-                      onClick={() => deleteProduct(prod.id)}
-                      className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  
                 </li>
               ))}
             </ul>

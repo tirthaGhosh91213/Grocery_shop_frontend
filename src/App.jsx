@@ -14,6 +14,7 @@ import AvailableProducts from './admin/pages/availableProducts/AvailableProducts
 import AddProduct from './admin/pages/addProduct/AddProduct';
 import PageNotFound from './pages/PageNotFound';
 import AdminOrders from './admin/pages/orders/orders';
+import AdminActiveOrders from './admin/pages/AllActiveOrders/activeOrders';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
       <Route path="/admin/available-product" element={<AvailableProducts />} />
       <Route path="/admin/add-product" element={<AddProduct />} />
       <Route path="/admin/orders" element={<AdminOrders />} />
+      <Route path="/admin/active-orders" element={<AdminActiveOrders />} />
 
       {/* 404 */}
       <Route path="*" element={<PageNotFound />} />

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const Address = () => {
   const [addresses, setAddresses] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderAmount, setOrderAmount] = useState(0);
+  const [placingOrder, setPlacingOrder] = useState(false); // New loading state
   const token = localStorage.getItem('accessToken');
+  const navigate = useNavigate();
 
-  // Fetch addresses on mount
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
@@ -23,7 +26,6 @@ const Address = () => {
 
         const result = await res.json();
         setAddresses(result.data || []);
-
         const active = result.data?.find((a) => a.isActive);
         setActiveId(active?.id || null);
       } catch (err) {
@@ -33,9 +35,8 @@ const Address = () => {
     };
 
     fetchAddresses();
-  }, []);
+  }, [token]);
 
-  // Set active address
   const handleSetActive = async (id) => {
     try {
       const res = await fetch(`http://localhost:8000/api/v1/address/set-active/${id}`, {
@@ -54,7 +55,6 @@ const Address = () => {
     }
   };
 
-  // Place order
   const handlePlaceOrder = async () => {
     if (!activeId) {
       toast.warning('Please select an address first');
@@ -62,6 +62,7 @@ const Address = () => {
     }
 
     try {
+      setPlacingOrder(true); // Start spinner
       const res = await fetch('http://localhost:8000/api/v1/orders/place', {
         method: 'POST',
         headers: {
@@ -70,10 +71,15 @@ const Address = () => {
       });
 
       if (!res.ok) throw new Error('Failed to place order');
-      toast.success('✅ Order placed successfully!');
+
+      const result = await res.json();
+      setOrderAmount(result.totalAmount || 0);
+      setOrderSuccess(true);
     } catch (err) {
       console.error(err);
       toast.error('❌ Failed to place order');
+    } finally {
+      setPlacingOrder(false); // Stop spinner
     }
   };
 
@@ -122,16 +128,58 @@ const Address = () => {
 
         <button
           onClick={handlePlaceOrder}
-          disabled={!activeId}
-          className={`px-6 py-2 rounded-md text-white transition ${
+          disabled={!activeId || placingOrder}
+          className={`px-6 py-2 rounded-md text-white transition flex items-center justify-center gap-2 ${
             activeId
               ? 'bg-[#f61a02] hover:bg-[#c30000]'
               : 'bg-gray-400 cursor-not-allowed'
           }`}
         >
-          🛒 Place Order
+          {placingOrder ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+              Placing...
+            </>
+          ) : (
+            '🛒 Place Order'
+          )}
         </button>
       </div>
+
+      {/* Order Success Modal */}
+      {orderSuccess && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+            <h2 className="text-xl font-bold text-green-600 mb-2">✅ Order Placed!</h2>
+            <p className="text-gray-700 mb-4">Your order has been placed successfully.</p>
+            <button
+              onClick={() => navigate("/")}
+              className="mt-4 px-4 py-2 bg-[#f61a02] text-white rounded hover:bg-[#c30000] transition"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

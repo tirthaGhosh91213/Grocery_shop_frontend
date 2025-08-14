@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [adminName, setAdminName] = useState("Admin"); // Default name
+
+  useEffect(() => {
+    // Get admin name from localStorage
+    const storedName = localStorage.getItem("adminName");
+    if (storedName && storedName.trim() !== "") {
+      setAdminName(storedName);
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    navigate("/admin/login");
+    localStorage.removeItem("adminName");
+    navigate("/login");
   };
 
   const activeClass =
@@ -19,48 +29,23 @@ const AdminNavbar = () => {
     <div className="w-full flex justify-between items-center px-6 py-4 bg-gray-100 shadow-md flex-wrap relative">
       {/* Left Navigation */}
       <div className="flex gap-4 flex-wrap">
-        <NavLink
-          to="/admin/dashborad"
-          className={(navbar) =>
-            navbar.isActive ? activeClass : inactiveClass
-          }
-        >
+        <NavLink to="/admin/dashboard" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
           Dashboard
         </NavLink>
 
-        <NavLink
-          to="/admin/add-product"
-          className={(navbar) =>
-            navbar.isActive ? activeClass : inactiveClass
-          }
-        >
+        <NavLink to="/admin/add-product" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
           Add Products with quantity
         </NavLink>
 
-        <NavLink
-          to="/admin/available-product"
-          className={(navbar) =>
-            navbar.isActive ? activeClass : inactiveClass
-          }
-        >
+        <NavLink to="/admin/available-product" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
           Available Products
         </NavLink>
 
-        <NavLink
-          to="/admin/orders"
-          className={(navbar) =>
-            navbar.isActive ? activeClass : inactiveClass
-          }
-        >
+        <NavLink to="/admin/orders" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
           All Orders
         </NavLink>
 
-        <NavLink
-          to="/admin/active-orders"
-          className={(navbar) =>
-            navbar.isActive ? activeClass : inactiveClass
-          }
-        >
+        <NavLink to="/admin/active-orders" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
           Active Orders
         </NavLink>
       </div>
@@ -71,39 +56,28 @@ const AdminNavbar = () => {
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className="flex items-center gap-2 cursor-pointer"
         >
+          {/* Circle with first letter of name */}
           <div className="w-8 h-8 bg-[#e63946] text-white flex justify-center items-center rounded-full font-bold">
-            A
+            {adminName.charAt(0).toUpperCase()}
           </div>
-          <span className="font-medium">Admin</span>
+
+          {/* Full name */}
+          <span className="font-medium">{adminName}</span>
+
+          {/* Dropdown arrow */}
           <svg
-            className={`w-4 h-4 transition-transform ${
-              dropdownOpen ? "rotate-180" : ""
-            }`}
+            className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
 
         {/* Dropdown Menu */}
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg overflow-hidden">
-            <button
-              onClick={() => {
-                navigate("/admin/profile");
-                setDropdownOpen(false);
-              }}
-              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              View Profile
-            </button>
             <button
               onClick={handleLogout}
               className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"

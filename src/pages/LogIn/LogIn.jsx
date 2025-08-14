@@ -17,9 +17,11 @@ function LogIn() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
 
+  // includes a Role dropdown in UI, but routing will use DB role only
   const [signinForm, setSigninForm] = useState({
     email: "",
     password: "",
+    role: "USER",
   });
 
   const navigate = useNavigate();
@@ -54,7 +56,10 @@ function LogIn() {
         showPopup(result.data || "OTP sent successfully", "success");
         setOtpSent(true);
       } else {
-        showPopup(`Failed to send OTP: ${result.apiError?.message || "Error"}`, "error");
+        showPopup(
+          `Failed to send OTP: ${result.apiError?.message || "Error"}`,
+          "error"
+        );
       }
     } catch (err) {
       showPopup(`Error: ${err.message}`, "error");
@@ -80,7 +85,10 @@ function LogIn() {
         showPopup(result.data || "OTP verified successfully", "success");
         setOtpVerified(true);
       } else {
-        showPopup(`OTP verification failed: ${result.apiError?.message || "Error"}`, "error");
+        showPopup(
+          `OTP verification failed: ${result.apiError?.message || "Error"}`,
+          "error"
+        );
       }
     } catch (err) {
       showPopup(`Error: ${err.message}`, "error");
@@ -108,9 +116,12 @@ function LogIn() {
       const result = await response.json();
       if (response.ok) {
         showPopup(`Signup successful! ${result.message || ""}`, "success");
-        navigate("/signin");
+        setRightPanelActive(false); // slide back to Sign In
       } else {
-        showPopup(`Signup failed: ${result.apiError?.message || "Error"}`, "error");
+        showPopup(
+          `Signup failed: ${result.apiError?.message || "Error"}`,
+          "error"
+        );
       }
     } catch (err) {
       showPopup(`Error: ${err.message}`, "error");
@@ -123,17 +134,47 @@ function LogIn() {
       const response = await fetch("http://localhost:8000/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signinForm),
+        body: JSON.stringify({
+          email: signinForm.email,
+          password: signinForm.password,
+        }),
       });
+
       const result = await response.json();
+
       if (response.ok) {
+        // roles can be ["ADMIN"] | ["USER"] | "ADMIN"/"USER" | undefined
+        const rolesFromDB = result?.data?.roles ?? [];
+        const primaryRoleRaw = Array.isArray(rolesFromDB)
+          ? (rolesFromDB[0] ?? "USER")
+          : rolesFromDB;
+        const primaryRole = String(primaryRoleRaw).toUpperCase(); // "ADMIN" | "USER"
+
         localStorage.setItem("accessToken", result.data.accessToken);
-        localStorage.setItem("roles", result.data.roles); // ✅ Added line to store roles
-        localStorage.setItem("userRole", JSON.stringify(result.data.roles || []));
+        localStorage.setItem("roles", JSON.stringify(rolesFromDB));
+        localStorage.setItem("primaryRole", primaryRole);
+
+        // Optional UX: warn if user-chosen role doesn't match DB
+        const chosen = String(signinForm.role).toUpperCase();
+        if (chosen && chosen !== primaryRole) {
+          toast.info(
+            `Your account role is ${primaryRole}. Continuing with that role.`
+          );
+        }
+
         showPopup("Login successful!", "success");
-        navigate("/");
+
+        // ✅ Redirect strictly by DB role
+        if (primaryRole === "ADMIN") {
+          navigate("/admin/dashborad"); // using your route spelling
+        } else {
+          navigate("/");
+        }
       } else {
-        showPopup(`Login failed: ${result.apiError?.message || "Error"}`, "error");
+        showPopup(
+          `Login failed: ${result.apiError?.message || "Error"}`,
+          "error"
+        );
       }
     } catch (err) {
       showPopup(`Error: ${err.message}`, "error");
@@ -143,61 +184,165 @@ function LogIn() {
   return (
     <>
       <ToastContainer position="top-center" autoClose={3000} />
-      <div className="bg-grey min-h-screen flex items-center justify-center bg-gray-200">
-        <div className={`relative w-full max-w-4xl min-h-[480px] rounded-lg shadow-xl overflow-hidden transition-all duration-700 ease-in-out ${rightPanelActive ? "right-panel-active" : ""}`}>
-
+      {/* Background */}
+      <div className="min-h-screen flex items-center justify-center bg-gray-300 p-4">
+        {/* SLIDING CONTAINER (kept exactly, just colors/responsive tweaks) */}
+        <div
+          className={`relative w-full max-w-4xl min-h-[520px] rounded-xl shadow-2xl overflow-hidden transition-all duration-700 ease-in-out ${
+            rightPanelActive ? "right-panel-active" : ""
+          }`}
+        >
           {/* Sign In Panel */}
-          <div className={`absolute top-0 bg-gradient-to-r from-slate-400 to-gray-300 left-0 w-1/2 h-full transition-transform duration-700 ease-in-out ${rightPanelActive ? "z-10" : "z-20"}`} style={{ transform: rightPanelActive ? "translateX(100%)" : "translateX(0)" }}>
-            <form onSubmit={handleSignin} className="flex flex-col items-center justify-center h-full p-8">
-              <h1 className="text-2xl font-bold mb-4">Sign In</h1>
-              <input type="email" name="email" placeholder="Email" value={signinForm.email} onChange={handleSigninChange} className="mb-4 p-3 border border-gray-700 text-dark-grey bg-gray-300 rounded w-full" required />
-              <input type="password" name="password" placeholder="Password" value={signinForm.password} onChange={handleSigninChange} className="mb-4 p-3 border border-gray-700 text-dark-grey bg-gray-300 rounded w-full" required />
-              <button type="submit" className="bg-gradient-to-r from-blue-600 to-purple-800 cursor-pointer text-white py-2 px-8 rounded w-full">Sign In</button>
+          <div
+            className={`absolute top-0 left-0 bg-white md:w-1/2 w-full h-full transition-transform duration-700 ease-in-out ${
+              rightPanelActive ? "z-10" : "z-20"
+            }`}
+            style={{
+              transform: rightPanelActive ? "translateX(100%)" : "translateX(0)",
+            }}
+          >
+            <form
+              onSubmit={handleSignin}
+              className="flex flex-col items-center justify-center h-full p-8 gap-4"
+            >
+              <h1 className="text-3xl font-extrabold text-red-600">Sign In</h1>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={signinForm.email}
+                onChange={handleSigninChange}
+                className="w-full max-w-sm p-3 border border-gray-300 rounded"
+                required
+              />
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={signinForm.password}
+                onChange={handleSigninChange}
+                className="w-full max-w-sm p-3 border border-gray-300 rounded"
+                required
+              />
+
+              {/* Role dropdown (UI). Routing uses DB role. */}
+              <select
+                name="role"
+                value={signinForm.role}
+                onChange={handleSigninChange}
+                className="w-full max-w-sm p-3 border border-gray-300 rounded"
+              >
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+
+              <button
+                type="submit"
+                className="w-full max-w-sm py-3 rounded font-semibold text-white bg-gradient-to-r from-red-600 to-orange-500 hover:opacity-90 transition"
+              >
+                Sign In
+              </button>
             </form>
           </div>
 
           {/* Sign Up Panel */}
-          <div className={`absolute top-0 right-0 w-1/2 bg-gradient-to-r from-gray-300 to-slate-400 h-full transition-transform duration-700 ease-in-out ${rightPanelActive ? "z-20" : "z-10"}`} style={{ transform: rightPanelActive ? "translateX(0)" : "translateX(100%)" }}>
-            <form onSubmit={handleSignup} className="flex flex-col items-center justify-center h-full p-8">
-              <h1 className="text-2xl font-bold mb-4">Create Account</h1>
+          <div
+            className={`absolute top-0 right-0 md:w-1/2 w-full bg-white h-full transition-transform duration-700 ease-in-out ${
+              rightPanelActive ? "z-20" : "z-10"
+            }`}
+            style={{
+              transform: rightPanelActive
+                ? "translateX(0)"
+                : "translateX(100%)",
+            }}
+          >
+            <form
+              onSubmit={handleSignup}
+              className="flex flex-col items-center justify-center h-full p-8 gap-4"
+            >
+              <h1 className="text-3xl font-extrabold text-orange-600">
+                Create Account
+              </h1>
+
               <input
-                  type="Text"
-                  name="name"
-                  placeholder="Name"
-                  value={signupForm.name}
-                  onChange={handleSignupChange}
-                  className="mb-4 p-3 border border-gray-700 text-dark-grey bg-gray-300 rounded w-full"
-                  required
-                  disabled={otpSent}
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={signupForm.name}
+                onChange={handleSignupChange}
+                className="w-full max-w-sm p-3 border border-gray-300 rounded"
+                required
+                disabled={otpSent}
               />
+
               <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={signupForm.email}
-                  onChange={handleSignupChange}
-                  className="mb-4 p-3 border border-gray-700 text-dark-grey bg-gray-300 rounded w-full"
-                  required
-                  disabled={otpSent}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={signupForm.email}
+                onChange={handleSignupChange}
+                className="w-full max-w-sm p-3 border border-gray-300 rounded"
+                required
+                disabled={otpSent}
               />
+
               {!otpSent && (
-                <button type="button" onClick={handleSendOtp} className="bg-gradient-to-r from-blue-600 to-purple-800 text-white py-2 px-4 rounded hover:bg-purple-400 cursor-pointer mb-4">
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  className="w-full max-w-sm py-3 rounded font-semibold text-white bg-gradient-to-r from-red-600 to-orange-500 hover:opacity-90 transition"
+                >
                   Send OTP
                 </button>
               )}
+
               {otpSent && !otpVerified && (
-                <div className="flex space-x-2 mb-4 w-full">
-                  <input type="text" name="otp" placeholder="Enter OTP" value={signupForm.otp} onChange={handleSignupChange} className="p-3 border border-gray-700 text-dark-grey bg-gray-300 rounded flex-1" required />
-                  <button type="button" onClick={handleVerifyOtp} className="bg-gradient-to-r from-blue-600 to-purple-800 text-white py-2 px-4 rounded cursor-pointer">
-                    Verify OTP
+                <div className="w-full max-w-sm flex gap-2">
+                  <input
+                    type="text"
+                    name="otp"
+                    placeholder="Enter OTP"
+                    value={signupForm.otp}
+                    onChange={handleSignupChange}
+                    className="flex-1 p-3 border border-gray-300 rounded"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={handleVerifyOtp}
+                    className="px-4 rounded font-semibold text-white bg-gradient-to-r from-red-600 to-orange-500 hover:opacity-90 transition"
+                  >
+                    Verify
                   </button>
                 </div>
               )}
+
               {otpVerified && (
                 <>
-                  <input type="password" name="password" placeholder="Password" value={signupForm.password} onChange={handleSignupChange} className="mb-4 p-3 border border-gray-300 rounded w-full" required />
-                  <input type="text" name="mob_no" placeholder="Mobile no." value={signupForm.mob_no} onChange={handleSignupChange} className="mb-4 p-3 border border-gray-300 rounded w-full" required />
-                  <button type="submit" className="bg-gradient-to-r from-blue-600 to-purple-800 text-white py-2 px-4 rounded w-full cursor-pointer">
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={signupForm.password}
+                    onChange={handleSignupChange}
+                    className="w-full max-w-sm p-3 border border-gray-300 rounded"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="mob_no"
+                    placeholder="Mobile no."
+                    value={signupForm.mob_no}
+                    onChange={handleSignupChange}
+                    className="w-full max-w-sm p-3 border border-gray-300 rounded"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="w-full max-w-sm py-3 rounded font-semibold text-white bg-gradient-to-r from-red-600 to-orange-500 hover:opacity-90 transition"
+                  >
                     Sign Up
                   </button>
                 </>
@@ -205,22 +350,35 @@ function LogIn() {
             </form>
           </div>
 
-          {/* Overlay Panel */}
-          <div className="absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-30" style={{ transform: rightPanelActive ? "translateX(-100%)" : "translateX(0)" }}>
-            <div className="relative w-full h-full bg-gradient-to-r from-blue-600 to-purple-800 text-black flex items-center justify-center p-8">
+          {/* Overlay Panel (kept, recolored, responsive) */}
+          <div
+            className="absolute top-0 md:left-1/2 left-0 md:w-1/2 w-full h-full overflow-hidden transition-transform duration-700 ease-in-out z-30"
+            style={{
+              transform: rightPanelActive
+                ? "translateX(-100%)"
+                : "translateX(0)",
+            }}
+          >
+            <div className="relative w-full h-full bg-gradient-to-r from-red-600 to-orange-500 text-white flex items-center justify-center p-8">
               {rightPanelActive ? (
-                <div className="text-center">
-                  <h1 className="text-3xl font-bold mb-2">Welcome Back!</h1>
-                  <p className="mb-4">To keep connected with us please login with your personal info</p>
-                  <button onClick={() => setRightPanelActive(false)} className="border cursor-pointer text-white bg-dark-grey border-white py-2 px-4 rounded hover:bg-white hover:text-black">
+                <div className="text-center space-y-3">
+                  <h1 className="text-3xl font-extrabold">Welcome Back!</h1>
+                  <p>To keep connected, please login with your personal info</p>
+                  <button
+                    onClick={() => setRightPanelActive(false)}
+                    className="border border-white py-2 px-4 rounded hover:bg-white hover:text-red-600 transition"
+                  >
                     Sign In
                   </button>
                 </div>
               ) : (
-                <div className="text-center">
-                  <h1 className="text-3xl font-bold mb-2">Hello, Friend!</h1>
-                  <p className="mb-4">Enter your personal details and start your journey with us</p>
-                  <button onClick={() => setRightPanelActive(true)} className="border cursor-pointer border-white bg-dark-grey text-white py-2 px-4 rounded hover:bg-white hover:text-black">
+                <div className="text-center space-y-3">
+                  <h1 className="text-3xl font-extrabold">Hello, Friend!</h1>
+                  <p>Enter your details and start your journey with us</p>
+                  <button
+                    onClick={() => setRightPanelActive(true)}
+                    className="border border-white py-2 px-4 rounded hover:bg-white hover:text-orange-600 transition"
+                  >
                     Sign Up
                   </button>
                 </div>
