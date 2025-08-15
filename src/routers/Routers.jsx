@@ -32,7 +32,7 @@ const Routers = () => {
       </Route>
 
       {/* Admin routes */}
-      <Route path="/admin/dashborad" element={<AdminDashboard />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/available-product" element={<AvailableProducts />} />
       
       <Route path="/admin/add-product" element={<AddProduct />} />

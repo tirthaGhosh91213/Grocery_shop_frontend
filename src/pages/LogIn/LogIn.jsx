@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -166,7 +166,7 @@ function LogIn() {
 
         // ✅ Redirect strictly by DB role
         if (primaryRole === "ADMIN") {
-          navigate("/admin/dashborad"); // using your route spelling
+          navigate("/admin"); // using your route spelling
         } else {
           navigate("/");
         }

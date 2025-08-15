@@ -251,9 +251,9 @@ const AdminDashboard = () => {
     .sort((a, b) => (b.discountPercentage || 0) - (a.discountPercentage || 0));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-b  from-pink-50 to-white px-4 py-6">
       {/* Pass computed name/initial to the navbar */}
-      <AdminNavbar adminName={adminName} adminInitial={adminInitial} />
+      <AdminNavbar adminName={adminName} adminInitial={adminInitial}  />
 
       {popup && (
         <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 transition-all animate-bounce">
@@ -261,7 +261,7 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6 mt-4 flex justify-between items-center">
         <input
           type="text"
           placeholder="Search product..."

@@ -7,7 +7,6 @@ const AdminNavbar = () => {
   const [adminName, setAdminName] = useState("Admin"); // Default name
 
   useEffect(() => {
-    // Get admin name from localStorage
     const storedName = localStorage.getItem("adminName");
     if (storedName && storedName.trim() !== "") {
       setAdminName(storedName);
@@ -29,23 +28,39 @@ const AdminNavbar = () => {
     <div className="w-full flex justify-between items-center px-6 py-4 bg-gray-100 shadow-md flex-wrap relative">
       {/* Left Navigation */}
       <div className="flex gap-4 flex-wrap">
-        <NavLink to="/admin/dashboard" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
+        <NavLink
+          to="/admin"
+          end // ✅ Only active for exact "/admin"
+          className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
+        >
           Dashboard
         </NavLink>
 
-        <NavLink to="/admin/add-product" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
+        <NavLink
+          to="/admin/add-product"
+          className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
+        >
           Add Products with quantity
         </NavLink>
 
-        <NavLink to="/admin/available-product" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
+        <NavLink
+          to="/admin/available-product"
+          className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
+        >
           Available Products
         </NavLink>
 
-        <NavLink to="/admin/orders" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
+        <NavLink
+          to="/admin/orders"
+          className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
+        >
           All Orders
         </NavLink>
 
-        <NavLink to="/admin/active-orders" className={(nav) => (nav.isActive ? activeClass : inactiveClass)}>
+        <NavLink
+          to="/admin/active-orders"
+          className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
+        >
           Active Orders
         </NavLink>
       </div>
