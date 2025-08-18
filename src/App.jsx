@@ -7,7 +7,7 @@ import Address from './components/Address/Address';
 import AddAddress from './components/Address/AddAddress';
 import Profile from './pages/Profile/Profile';
 import Checkout from './pages/Checkout/Checkout';
-import Signup from './pages/SignUp/SignUp';
+
 import LogIn from './pages/LogIn/LogIn';
 import AdminDashboard from './admin/pages/dashborad/AdminDashborad';
 import AvailableProducts from './admin/pages/availableProducts/AvailableProducts';
@@ -27,7 +27,7 @@ const App = () => {
         <Route path="checkout" element={<Checkout />} />
         <Route path="address" element={<Address />} />
         <Route path="add-address" element={<AddAddress />} />
-        <Route path="signup" element={<Signup />} />
+       
         <Route path="login" element={<LogIn />} />
       </Route>
 
