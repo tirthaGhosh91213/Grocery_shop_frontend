@@ -170,7 +170,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8000/api/v1/user-profile/update/", {
+      const res = await fetch("http://localhost:8000/api/v1/user-profile/update", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${accessToken}`,
